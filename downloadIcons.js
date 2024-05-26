@@ -14,7 +14,7 @@ const {FIGMA_TOKEN} = process.env;
 const FIGMA_API_HOST = 'https://api.figma.com/v1';
 const FIGMA_KEY = '1TDMKALpzX0ByUE7Jo2Fw8';
 const PAGE_NAME = 'Icons';
-const BASE_DIR = '/public';
+const BASE_DIR = process.argv[2];
 
 const agent = superagent.agent();
 
@@ -65,14 +65,12 @@ const uploadIcons = async () => {
         process.exit(1);
     }
 
-    // Создание папок и сохранение каждой иконки в отдельную папку
-    const BASE_DIR = 'icons'; // Базовая папка для сохранения иконок
 
     await Promise.all(iconsData.map(async icon => {
         const extension = '.svg';
         const iconSvg = (await agent.get(icon.url)).body;
         const iconName = `${icon.name.replaceAll(/ |\//g, '')}${extension}`;
-        const folderPath = path.join(process.cwd(), BASE_DIR, icon.name); // Путь к папке для данной иконки
+        const folderPath = path.join(process.cwd(), `${BASE_DIR}`, icon.name); // Путь к папке для данной иконки
 
         await fs.mkdir(folderPath, { recursive: true }); // Создаем папку рекурсивно
 
